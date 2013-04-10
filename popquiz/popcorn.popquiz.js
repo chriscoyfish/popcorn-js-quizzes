@@ -30,10 +30,11 @@
 * Authors:
 * Adarsh Uppula
 * Aaron Bazzone
+* Chris Coykendall
 *
 **/
 
-var newAnswer = "";
+var newAnswer = "0";
 var idIterator = "0"
 var docId = function(theId) {
     return document.getElementById(theId);        
@@ -56,10 +57,28 @@ var setQuestion= function (question) {
 	docId('question').innerHTML = question;
 }
 
-var checkAnswer=function(t, chosen, options) {
-	if (true) {
-		setTimeout(function(){t.play(); docId('quizPanel').style.display="none"; options._container.style.display = "none"}, 2000);
-	}
+var setRightAnswer = function(answer) {
+  newAnswer=answer;
+}
+
+var checkAnswer=function(t, options) {
+  var radios = document.getElementsByName("answerGroup");
+  var length = radios.length;
+  var chosen = -1;
+  var i = 0;
+  for (i = 0; i < length; i++) {
+    if (radios[i].checked) {
+     chosen=radios[i].value-1;
+    }
+  }
+  if (chosen==newAnswer) {
+    alert("Correct!");
+  } else {
+    alert("Incorrect!");
+  }
+  if (true) {
+    setTimeout(function(){t.play(); docId('quizPanel').style.display="none"; options._container.style.display = "none"}, 1000);
+  }
 }
 
 var addAnswer= function (answer) {
@@ -67,10 +86,11 @@ var addAnswer= function (answer) {
     var newOption = document.createElement('div');
      var radio = document.createElement('input');
      radio.id = "answer_" + idIterator;
-	 radio.name = idIterator;
+	   radio.name = "answerGroup";
+     radio.value=idIterator;
      radio.type = 'radio';
-	 ig = function(i) { return i;}(idIterator)
-	 radio.onclick = function() { alert(ig)};
+	   ig = function(i) { return i;}(idIterator)
+	   radio.onclick = function() { alert("Chosen answer: " + answer)};
      
      var label = document.createElement('span');    
      label.id = "label_" + idIterator;
@@ -154,8 +174,9 @@ var addAnswer= function (answer) {
 		  docId('answers').innerHTML="";
 		  idIterator = 0;
 		  docId('quizPanel').style.display="inline-block";
-		  docId('quizSubmit').onclick = function() {checkAnswer(t, 1, options)};
+		  docId('quizSubmit').onclick = function() {checkAnswer(t, options)};
 		  setQuestion(options.question);
+      setRightAnswer(options.answer);
 		  for (var i = 0; i < options.choices.length; i++) {
 				addAnswer(options.choices[i]);
 		  } 
